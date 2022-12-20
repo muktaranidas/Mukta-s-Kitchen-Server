@@ -59,12 +59,18 @@ async function run() {
     app.get("/services", async (req, res) => {
       const query = {};
       const cursor = serviceCollection.find(query);
-      const services = await cursor.limit(3).toArray();
+      const services = await cursor.limit(6).toArray();
       res.send(services);
     });
-    app.post("/services", verifyJWT, async (req, res) => {
-      const service = req.body;
-      const result = await reviewCollection.insertOne(service);
+    // app.post("/services", verifyJWT, async (req, res) => {
+    //   const service = req.body;
+    //   const result = await reviewCollection.insertOne(service);
+    //   res.send(result);
+    // });
+    app.post("/servicesAll", async (req, res) => {
+      const newService = req.body;
+      // console.log(newService);
+      const result = await serviceCollection.insertOne(newService);
       res.send(result);
     });
 
@@ -88,7 +94,7 @@ async function run() {
     // reviews api
     app.get("/reviews", verifyJWT, async (req, res) => {
       const decoded = req.decoded;
-      console.log("Inside Reviews Api", decoded);
+      // console.log("Inside Reviews Api", decoded);
       if (decoded.email !== req.query.email) {
         res.status(403).send({ message: "UnAuthorized Access" });
       }
